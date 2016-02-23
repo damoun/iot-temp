@@ -41,6 +41,8 @@ platformio run
 
 ## Upload
 
+On every upload, you need to put the ESP8266 in upload mode by pressing the
+GPIO0 button and the reset button. The LED should be red.
 To upload the compiled program to the ESP8266, use the following command :
 ```
 platformio run --target upload
