@@ -1,14 +1,13 @@
 #include <Wire.h>
-#include <Adafruit_HDC1000.h>
-
-#include "ESP8266WiFi.h"
-#include "PubSubClient.h"
+#include <HDC1000.h>
+#include <ESP8266WiFi.h>
+#include <PubSubClient.h>
 
 #include "settings.h"
 
 WiFiClient espClient;
 PubSubClient client(espClient);
-Adafruit_HDC1000 hdc = Adafruit_HDC1000();
+HDC1000 hdc = HDC1000();
 
 void setup() {
   Serial.begin(115200);
@@ -19,9 +18,7 @@ void setup() {
   Wire.begin(2, 14);
 
   // Start sensor
-  if (!hdc.begin()) {
-    while (1);
-  }
+  hdc.begin();
 }
 
 void setup_wifi() {
@@ -65,8 +62,11 @@ void loop() {
   if (now - lastMsg > 1000) {
     lastMsg = now;
 
-    float newTemp = hdc.readTemperature();
-    float newHum = hdc.readHumidity();
+    float newTemp = hdc.getTemperature();
+    float newHum = hdc.getHumidity();
+
+    if (newTemp == HDC1000_ERROR_CODE || newHum == HDC1000_ERROR_CODE)
+      Serial.print("Error getting temperature/humidity");
 
     if (checkBound(newTemp, temp, diff)) {
       temp = newTemp;
