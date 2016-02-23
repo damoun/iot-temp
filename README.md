@@ -1,4 +1,4 @@
-# iot-temp
+# iot-temp [![Travis][travis-img]][travis-url]
 
 ESP8266 with temperature & humidity wireless sensor.
 
@@ -35,3 +35,6 @@ command :
 ```
 platformio serialports monitor
 ```
+
+[travis-img]: https://travis-ci.org/Damoun/iot-temp.svg
+[travis-url]: https://travis-ci.org/Damoun/iot-temp/
