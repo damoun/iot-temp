@@ -18,19 +18,8 @@ You need to setup a MQTT server too.
 
 ## Settings
 
-The settings of the wifi ssid and password and the mqtt parameters are defined
-in src/settings.h :
-```
-#define wifi_ssid "WIFI_SSID"
-#define wifi_password "WIFI_PASSWORD"
-
-#define mqtt_server "MQTT_IP"
-#define mqtt_user "MQTT_USERNAME"
-#define mqtt_password "MQTT_PASSWORD"
-
-#define humidity_topic "MQTT_HUMIDITY_TOPIC"
-#define temperature_topic "MQTT_TEMPERATURE_TOPIC"
-```
+On the first boot, the sensor will start a wireless to be configured.
+You can follow the procedure from the [homie-esp8266 lib][homie-esp8266-doc-url].
 
 ## Compile
 
@@ -58,3 +47,4 @@ platformio serialports monitor
 
 [travis-img]: https://travis-ci.org/Damoun/iot-temp.svg
 [travis-url]: https://travis-ci.org/Damoun/iot-temp/
+[homie-esp8266-doc-url]: https://github.com/marvinroger/homie-esp8266/wiki/6.-Configuration-API
