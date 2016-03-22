@@ -1,81 +1,69 @@
 #include <Wire.h>
 #include <HDC1000.h>
-#include <ESP8266WiFi.h>
-#include <PubSubClient.h>
+#include <Homie.h>
 
-#include "settings.h"
+const int INTERVAL = 300;
 
-WiFiClient espClient;
-PubSubClient client(espClient);
+unsigned long lastTemperatureSent = 0;
+unsigned long lastHumiditySent = 0;
+
+HomieNode temperatureNode("temperature", "temperature");
+HomieNode humidityNode("humidity", "humidity");
 HDC1000 hdc = HDC1000();
 
-void setup() {
-  Serial.begin(115200);
-  setup_wifi();
-  client.setServer(mqtt_server, 1883);
+void sendTemperature() {
+  if (millis() - lastTemperatureSent >= INTERVAL * 1000UL
+  || lastTemperatureSent == 0) {
+    float temperature = hdc.getTemperature();
+    Serial.print("Temperature: ");
+    Serial.print(temperature);
+    Serial.println(" °C");
+    if (Homie.setNodeProperty(temperatureNode, "temperature", String(temperature), true)) {
+      lastTemperatureSent = millis();
+    } else {
+      Serial.println("Sending temperature failed");
+    }
+  }
+}
 
+void sendHumidity() {
+  if (millis() - lastHumiditySent >= INTERVAL * 1000UL
+  || lastHumiditySent == 0) {
+    float humidity = hdc.getHumidity();
+    Serial.print("Humidity: ");
+    Serial.print(humidity);
+    Serial.println("%");
+    if (Homie.setNodeProperty(humidityNode, "humidity", String(humidity), true)) {
+      lastHumiditySent = millis();
+    } else {
+      Serial.println("Sending humidity failed");
+    }
+  }
+}
+
+void loopHandler() {
+  sendTemperature();
+  sendHumidity();
+}
+
+void setupHandler() {
+  Homie.setNodeProperty(temperatureNode, "unit", "c", true);
+  Homie.setNodeProperty(humidityNode, "unit", "%", true);
   // Set SDA and SDL ports
   Wire.begin(2, 14);
-
   // Start sensor
   hdc.begin();
 }
 
-void setup_wifi() {
-  delay(10);
-  WiFi.begin(wifi_ssid, wifi_password);
-
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.print(".");
-  }
+void setup() {
+  Homie.setFirmware("iot-temp", "1.0.0");
+  Homie.registerNode(temperatureNode);
+  Homie.registerNode(humidityNode);
+  Homie.setSetupFunction(setupHandler);
+  Homie.setLoopFunction(loopHandler);
+  Homie.setup();
 }
-
-void reconnect() {
-  // Loop until we're reconnected
-  while (!client.connected()) {
-    // Attempt to connect
-    // If you do not want to use a username and password, change next line to
-    // if (client.connect("ESP8266Client")) {
-    if (!client.connect("ESP8266Client", mqtt_user, mqtt_password)) {
-      delay(5000);
-    }
-  }
-}
-
-bool checkBound(float newValue, float prevValue, float maxDiff) {
-  return newValue < prevValue - maxDiff || newValue > prevValue + maxDiff;
-}
-
-long lastMsg = 0;
-float temp = 0.0;
-float hum = 0.0;
-float diff = 1.0;
 
 void loop() {
-  if (!client.connected()) {
-    reconnect();
-  }
-  client.loop();
-
-  long now = millis();
-  if (now - lastMsg > 1000) {
-    lastMsg = now;
-
-    float newTemp = hdc.getTemperature();
-    float newHum = hdc.getHumidity();
-
-    if (newTemp == HDC1000_ERROR_CODE || newHum == HDC1000_ERROR_CODE)
-      Serial.print("Error getting temperature/humidity");
-
-    if (checkBound(newTemp, temp, diff)) {
-      temp = newTemp;
-      client.publish(temperature_topic, String(temp).c_str(), true);
-    }
-
-    if (checkBound(newHum, hum, diff)) {
-      hum = newHum;
-      client.publish(humidity_topic, String(hum).c_str(), true);
-    }
-  }
+  Homie.loop();
 }
