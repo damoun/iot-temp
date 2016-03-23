@@ -1,5 +1,5 @@
 #include <Wire.h>
-#include <HDC1000.h>
+#include <Adafruit_HDC1000.h>
 #include <Homie.h>
 
 const int INTERVAL = 300;
@@ -9,12 +9,12 @@ unsigned long lastHumiditySent = 0;
 
 HomieNode temperatureNode("temperature", "temperature");
 HomieNode humidityNode("humidity", "humidity");
-HDC1000 hdc = HDC1000();
+Adafruit_HDC1000 hdc = Adafruit_HDC1000();
 
 void sendTemperature() {
   if (millis() - lastTemperatureSent >= INTERVAL * 1000UL
   || lastTemperatureSent == 0) {
-    float temperature = hdc.getTemperature();
+    float temperature = hdc.readTemperature();
     Serial.print("Temperature: ");
     Serial.print(temperature);
     Serial.println(" °C");
@@ -29,7 +29,7 @@ void sendTemperature() {
 void sendHumidity() {
   if (millis() - lastHumiditySent >= INTERVAL * 1000UL
   || lastHumiditySent == 0) {
-    float humidity = hdc.getHumidity();
+    float humidity = hdc.readHumidity();
     Serial.print("Humidity: ");
     Serial.print(humidity);
     Serial.println("%");
