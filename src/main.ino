@@ -1,5 +1,9 @@
+#if defined (HDC_SENSOR)
 #include <Wire.h>
 #include <Adafruit_HDC1000.h>
+#elif defined (DHT_SENSOR)
+#include <DHT.h>
+#endif
 #include <Homie.h>
 
 const int INTERVAL = 300;
@@ -9,12 +13,19 @@ unsigned long lastHumiditySent = 0;
 
 HomieNode temperatureNode("temperature", "temperature");
 HomieNode humidityNode("humidity", "humidity");
-Adafruit_HDC1000 hdc = Adafruit_HDC1000();
+
+#if defined (HDC_SENSOR)
+Adafruit_HDC1000 sensor = Adafruit_HDC1000();
+#elif defined (DHT_SENSOR)
+#define DHTPIN D4
+#define DHTTYPE DHT11
+DHT sensor(DHTPIN, DHTTYPE);
+#endif
 
 void sendTemperature() {
   if (millis() - lastTemperatureSent >= INTERVAL * 1000UL
   || lastTemperatureSent == 0) {
-    float temperature = hdc.readTemperature();
+    float temperature = sensor.readTemperature();
     Serial.print("Temperature: ");
     Serial.print(temperature);
     Serial.println(" °C");
@@ -29,7 +40,7 @@ void sendTemperature() {
 void sendHumidity() {
   if (millis() - lastHumiditySent >= INTERVAL * 1000UL
   || lastHumiditySent == 0) {
-    float humidity = hdc.readHumidity();
+    float humidity = sensor.readHumidity();
     Serial.print("Humidity: ");
     Serial.print(humidity);
     Serial.println("%");
@@ -49,10 +60,11 @@ void loopHandler() {
 void setupHandler() {
   Homie.setNodeProperty(temperatureNode, "unit", "c", true);
   Homie.setNodeProperty(humidityNode, "unit", "%", true);
+  #if defined (HDC_SENSOR)
   // Set SDA and SDL ports
   Wire.begin(2, 14);
-  // Start sensor
-  hdc.begin();
+  #endif
+  sensor.begin();
 }
 
 void setup() {
