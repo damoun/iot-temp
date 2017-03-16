@@ -1,15 +1,15 @@
-# iot-temp [![Travis][travis-img]][travis-url]
+# iot\-temp
 
 ESP8266 with temperature & humidity wireless sensor.
 
-I use a huzzah ESP8266 and a HDC1008 from adafruit.
+This project is compatible with 2 boards:
+- huzzah ESP8266 and a HDC1008 from adafruit
+- d1 mini ESP8266 and a DHT11 from wemos
 
-![prototyping board](photo.jpg)
-
-## Requirement
+## Requirements
 
 This project use PlatformIO, an open source ecosystem for IoT development
-written in python. You can install it through pip :
+written in python. You can install it through pip:
 ```
 pip install platformio
 ```
@@ -23,16 +23,20 @@ You can follow the procedure from the [homie-esp8266 lib][homie-esp8266-doc-url]
 
 ## Compile
 
-Compile the program with the following command :
+Compile the program with the following command:
 ```
 platformio run
 ```
 
 ## Upload
 
-On every upload, you need to put the ESP8266 in upload mode by pressing the
-GPIO0 button and the reset button. The LED should be red.
-To upload the compiled program to the ESP8266, use the following command :
+On every upload, you need to put the ESP8266 in upload mode:
+- On huzzah, you have to press the GPIO0 button and the reset button.
+The LED should be red.
+- On wemos, you have to press the RESET button and power on the board.
+The LED should blink.
+
+To upload the compiled program to the ESP8266, use the following command:
 ```
 platformio run --target upload
 ```
@@ -40,7 +44,7 @@ platformio run --target upload
 ## Debug
 
 To debug the program, you can get the serial output with the following
-command :
+command:
 ```
 platformio serialports monitor
 ```
