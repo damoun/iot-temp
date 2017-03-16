@@ -47,4 +47,4 @@ platformio serialports monitor
 
 [travis-img]: https://travis-ci.org/Damoun/iot-temp.svg
 [travis-url]: https://travis-ci.org/Damoun/iot-temp/
-[homie-esp8266-doc-url]: https://github.com/marvinroger/homie-esp8266/wiki/6.-Configuration-API
+[homie-esp8266-doc-url]: https://homie-esp8266.readme.io/docs/json-configuration-file
