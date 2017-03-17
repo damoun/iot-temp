@@ -14,7 +14,11 @@ written in python. You can install it through pip:
 pip install platformio
 ```
 
-You need to setup a MQTT server too.
+You need to setup a MQTT server too:
+```
+docker run -d -P --rm -p 1883:1883 --name mqtt ncarlier/mqtt
+docker exec -t mqtt mosquitto_sub -t '#'
+```
 
 ## Settings
 
