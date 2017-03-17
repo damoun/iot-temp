@@ -38,7 +38,7 @@ The LED should blink.
 
 To upload the compiled program to the ESP8266, use the following command:
 ```
-platformio run --target upload
+platformio run --target upload -e wemos|huzzah
 ```
 
 ## Debug
