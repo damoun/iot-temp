@@ -61,6 +61,7 @@ void setupHandler() {
   Wire.begin(SDA, SDL);
   #endif
   sensor.begin();
+  Serial.begin(115200);
 }
 
 void setup() {

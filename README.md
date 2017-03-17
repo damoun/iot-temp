@@ -46,7 +46,7 @@ platformio run --target upload
 To debug the program, you can get the serial output with the following
 command:
 ```
-platformio serialports monitor
+platformio serialports monitor -b 115200
 ```
 
 [travis-img]: https://travis-ci.org/Damoun/iot-temp.svg
